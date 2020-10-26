@@ -25,7 +25,7 @@ class FID(metric_base.MetricBase):
     def __init__(self, max_reals, num_fakes, minibatch_per_gpu, use_cached_real_stats=True, **kwargs):
         super().__init__(**kwargs)
         self.max_reals = max_reals
-        self.num_fakes = num_fakes
+        self.num_fakes = 5000 # num_fakes
         self.minibatch_per_gpu = minibatch_per_gpu
         self.use_cached_real_stats = use_cached_real_stats
 

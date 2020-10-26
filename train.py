@@ -168,7 +168,7 @@ def setup_training_options(
 
     cfg_specs = {
         'auto':          dict(ref_gpus=-1, kimg=25000,  mb=-1, mbstd=-1, fmaps=-1,  lrate=-1,     gamma=-1,   ema=-1,  ramp=0.05, map=2), # populated dynamically based on 'gpus' and 'res'
-        '11gb-gpu':     dict(ref_gpus=1,  kimg=25000,  mb=4, mbstd=4,  fmaps=1,   lrate=0.002,  gamma=10,   ema=10,  ramp=None, map=8), # uses mixed-precision, 11GB GPU
+        '11gb-gpu':     dict(ref_gpus=2,  kimg=25000,  mb=8, mbstd=8,  fmaps=1,   lrate=0.002,  gamma=0.1,   ema=10,  ramp=None, map=8), # uses mixed-precision, 11GB GPU
         '24gb-gpu':     dict(ref_gpus=1,  kimg=25000,  mb=8, mbstd=8,  fmaps=1,   lrate=0.002,  gamma=10,   ema=10,  ramp=None, map=8), # uses mixed-precision, 24GB GPU
         '48gb-gpu':     dict(ref_gpus=1,  kimg=25000,  mb=16, mbstd=16,  fmaps=1,   lrate=0.002,  gamma=10,   ema=10,  ramp=None, map=8), # uses mixed-precision, 48GB GPU
         'stylegan2':     dict(ref_gpus=8,  kimg=25000,  mb=32, mbstd=4,  fmaps=1,   lrate=0.002,  gamma=10,   ema=10,  ramp=None, map=8), # uses mixed-precision, unlike original StyleGAN2
@@ -204,6 +204,10 @@ def setup_training_options(
     args.G_args.mapping_layers = spec.map
     args.G_args.num_fp16_res = args.D_args.num_fp16_res = 4 # enable mixed-precision training
     args.G_args.conv_clamp = args.D_args.conv_clamp = 256 # clamp activations to avoid float16 overflow
+
+    args.loss_args.pl_weight = 0.1 # disable path length regularization
+    args.G_args.style_mixing_prob = 0.1 # disable style mixing
+    # args.D_args.architecture = 'orig' # disable residual skip connections
 
     if cfg == 'cifar':
         args.loss_args.pl_weight = 0 # disable path length regularization
