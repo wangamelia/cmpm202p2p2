@@ -9,6 +9,7 @@
 * **Neighbor vectors**: Fine-tune seed selections by looking at vectors near it. Included in the generate.py script
 * **Flesh Digressions**: @aydao’s circular constant layer script edited to work with ADA see aydao_flesh_digressions.py
 * **Raw dataset creations**: Taken from the @skyflynil repo, reduces the size of datasets dramatically. Use `create_from images_raw` and `create_from image_folders_raw` in dataset creation, and use `--use-raw=True` in training (False by default!)
+* **align faces script**: From @pbaylies, this script will align images better for projection.
 
 ## StyleGAN2 with adaptive discriminator augmentation (ADA)<br>&mdash; Official TensorFlow implementation
 
