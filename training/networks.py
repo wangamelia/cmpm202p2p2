@@ -329,9 +329,14 @@ def G_mapping(
             x = apply_bias_act(dense_layer(x, fmaps=fmaps, lrmul=mapping_lrmul), act=mapping_nonlinearity, lrmul=mapping_lrmul)
 
     # Broadcast.
+    #if dlatent_broadcast is not None:
+    #    with tf.variable_scope('Broadcast'):
+    #        x = tf.tile(x[:, np.newaxis], [1, dlatent_broadcast, 1])
+
+    # changes from idinvert -- pdb
     if dlatent_broadcast is not None:
-        with tf.variable_scope('Broadcast'):
-            x = tf.tile(x[:, np.newaxis], [1, dlatent_broadcast, 1])
+        with tf.variable_scope('Reshape'):
+            x = tf.reshape(x, shape=[-1, dlatent_broadcast, latent_size])
 
     # Output.
     assert x.dtype == tf.as_dtype(dtype)
