@@ -99,8 +99,7 @@ class TFRecordDataset:
         assert all(shape[0] == max_shape[0] for shape in tfr_shapes)
         assert all(shape[1] == shape[2] for shape in tfr_shapes)
         assert all(shape[1] == self.resolution // (2**lod) for shape, lod in zip(tfr_shapes, tfr_lods))
-        # Breaks raw functions
-        # assert all(lod in tfr_lods for lod in range(self.resolution_log2 - 1))
+        #assert all(lod in tfr_lods for lod in range(self.resolution_log2 - 1))
 
         # Load labels.
         assert max_label_size == 'full' or max_label_size >= 0
@@ -123,10 +122,7 @@ class TFRecordDataset:
             for tfr_file, tfr_shape, tfr_lod in zip(tfr_files, tfr_shapes, tfr_lods):
                 if tfr_lod < 0:
                     continue
-
-                tfr_file = tfr_files[-1]  # should be the highest resolution tf_record file
-                tfr_shape = tfr_shapes[-1]  # again the highest resolution shape
-                dset = tf.data.TFRecordDataset(tfr_file, compression_type="", buffer_size=buffer_mb<< 20)
+                dset = tf.data.TFRecordDataset(tfr_file, compression_type='', buffer_size=buffer_mb<<20)
                 if max_images is not None:
                     dset = dset.take(max_images)
                 if use_raw:
@@ -157,8 +153,7 @@ class TFRecordDataset:
         if self._cur_minibatch != minibatch_size or self._cur_lod != lod:
             self._tf_init_ops[lod].run({self._tf_minibatch_in: minibatch_size})
             self._cur_minibatch = minibatch_size
-            # breaks raw loading?
-            #self._cur_lod = lod
+            self._cur_lod = lod
 
     # Get next minibatch as TensorFlow expressions.
     def get_minibatch_tf(self):
@@ -237,7 +232,7 @@ class TFRecordDataset:
             }
         )
         image = tf.image.decode_image(features['img']) 
-        return tf.transpose(image, [2,0,1]) 
+        return tf.transpose(image, [2,0,1])
 
     # Parse individual image from a tfrecords file into NumPy array.
     @staticmethod
