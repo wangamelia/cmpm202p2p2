@@ -324,8 +324,11 @@ def G_mapping(
 
     # Mapping layers.
     for layer_idx in range(mapping_layers):
-        with tf.variable_scope(f'Dense{layer_idx}'):
-            fmaps = mapping_fmaps if mapping_fmaps is not None and layer_idx < mapping_layers - 1 else dlatent_size
+        with tf.variable_scope(f'Dense%d' % layer_idx):
+            if layer_idx == mapping_layers - 1:
+                fmaps = dlatent_size * dlatent_broadcast
+            else:
+                fmaps = mapping_fmaps if mapping_fmaps is not None and layer_idx < mapping_layers - 1 else dlatent_size
             x = apply_bias_act(dense_layer(x, fmaps=fmaps, lrmul=mapping_lrmul), act=mapping_nonlinearity, lrmul=mapping_lrmul)
 
     # Broadcast.
