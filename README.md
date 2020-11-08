@@ -7,6 +7,7 @@
 * **Vertical Mirroring**: use `--mirrory=True` to flip training set top to bottom
 * **Interpolations methods**: Multiple interpolation methods included in the generate.py script
 * **Neighbor vectors**: Fine-tune seed selections by looking at vectors near it. Included in the generate.py script
+* **Use np vectors in interpolations (in addition to seed values)** Use saved .npy or .npz files in interpolation metohds. Thanks @ekkolabs!
 * **Flesh Digressions**: @aydao’s circular constant layer script edited to work with ADA see aydao_flesh_digressions.py
 * **Raw dataset creations**: Taken from the @skyflynil repo, reduces the size of datasets dramatically. Use `create_from images_raw` and `create_from image_folders_raw` in dataset creation, and use `--use-raw=True` in training (False by default!)
 * **align faces script**: From @pbaylies, this script will align images better for projection.
