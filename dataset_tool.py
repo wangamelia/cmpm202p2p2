@@ -733,13 +733,16 @@ def create_from_images_raw(tfrecord_dir, image_dir, shuffle, resolution_log2=7, 
     if len(image_filenames) == 0:
         error("No input images found")
     
+    print('loading: ' + image_filenames[0])
     img = np.asarray(PIL.Image.open(image_filenames[0]))
     resolution = img.shape[0]
+    print(resolution)
+    print(2 ** int(np.floor(np.log2(resolution))))
     channels = img.shape[2] if img.ndim == 3 else 1
-    if img.shape[1] != resolution:
-        error('Input images must have the same width and height')
-    if resolution != 2 ** int(np.floor(np.log2(resolution))):
-        error('Input image resolution must be a power-of-two')
+    # if img.shape[1] != resolution:
+    #     error('Input images must have the same width and height')
+    # if resolution != 2 ** int(np.floor(np.log2(resolution))):
+    #     error('Input image resolution must be a power-of-two')
     if channels not in [1, 3]:
         error('Input images must be stored as RGB or grayscale')
 
@@ -747,6 +750,10 @@ def create_from_images_raw(tfrecord_dir, image_dir, shuffle, resolution_log2=7, 
         order = tfr.choose_shuffled_order() if shuffle else np.arange(len(image_filenames))
         tfr.create_tfr_writer(img.shape)
         for idx in range(order.size):
+            print('loading: ' + image_filenames[order[idx]])
+            # img = np.asarray(PIL.Image.open(image_filenames[order[idx]]))
+            # if (img.shape[1] != 1024) or (img.shape[0] != 1024):
+            #     error('Input images must have the same width and height')
             with tf.gfile.FastGFile(image_filenames[order[idx]], 'rb') as fid:
                 try:
                     tfr.add_image_raw(fid.read())
