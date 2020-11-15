@@ -218,10 +218,10 @@ def setup_training_options(
         args.G_args.fmap_base = 32 << 10
         args.G_args.fmap_max = 1024
         args.loss_args.G_top_k = True
-        # args.loss_args.G_top_k_gamma = 0.9862 # takes 12500 kimg to decay to 0.5
-        args.loss_args.G_top_k_gamma = 0.9726 # takes 6250 kimg to decay to 0.5
+        # args.loss_args.G_top_k_gamma = 0.9862 # takes 12500 kimg to decay to 0.5 (~1/2 of total_kimg when training from scratch)
+        args.loss_args.G_top_k_gamma = 0.9726 # takes 6250 kimg to decay to 0.5 (~1/4 of total_kimg when training from scratch)
         args.loss_args.G_top_k_frac = 0.5
-        args.minibatch_gpu = 2 # probably will need to set this pretty low with such a large G
+        args.minibatch_gpu = 2 # probably will need to set this pretty low with such a large G, higher values work better for top-k training though
         # args.G_args.num_fp16_res = 6 # making more layers fp16 can help as well
 
     if cfg == 'cifar' or cfg.split('-')[-1] == 'complex':
