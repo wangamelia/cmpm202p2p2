@@ -756,7 +756,7 @@ def create_from_images_raw(tfrecord_dir, image_dir, shuffle, resolution_log2=7, 
         order = tfr.choose_shuffled_order() if shuffle else np.arange(len(image_filenames))
         tfr.create_tfr_writer(img.shape)
         for idx in range(order.size):
-            print('loading: ' + image_filenames[order[idx]])
+            # print('loading: ' + image_filenames[order[idx]])
             # img = np.asarray(PIL.Image.open(image_filenames[order[idx]]))
             # if (img.shape[1] != 1024) or (img.shape[0] != 1024):
             #     error('Input images must have the same width and height')
