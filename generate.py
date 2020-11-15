@@ -6,6 +6,7 @@
 # distribution of this software and related documentation without an express
 # license agreement from NVIDIA CORPORATION is strictly prohibited.
 
+
 """Generate images using pretrained network pickle."""
 
 import argparse
@@ -184,19 +185,19 @@ def get_noiseloop(endpoints, nf, d, start_seed):
     for f in range(nf):
       z = np.random.randn(1, 512)
       for i in range(512):
-        z[0,i] = features[i].get_val(inc*f) 
+        z[0,i] = features[i].get_val(inc*f)
       zs.append(z)
 
     return zs
-    
+
 def line_interpolate(zs, steps):
    out = []
    for i in range(len(zs)-1):
     for index in range(steps):
-     fraction = index/float(steps) 
+     fraction = index/float(steps)
      out.append(zs[i+1]*fraction + zs[i]*(1-fraction))
    return out
-   
+
 def generate_zs_from_seeds(seeds,Gs):
     zs = []
     for seed_idx, seed in enumerate(seeds):
@@ -209,7 +210,7 @@ def convertZtoW(latent, truncation_psi=0.7, truncation_cutoff=9):
     dlatent = Gs.components.mapping.run(latent, None) # [seed, layer, component]
     dlatent_avg = Gs.get_var('dlatent_avg') # [component]
     dlatent = dlatent_avg + (dlatent - dlatent_avg) * truncation_psi
-    
+
     return dlatent
 
 def generate_latent_images(zs, truncation_psi, outdir, save_npy,prefix,vidname,framerate):
@@ -217,10 +218,10 @@ def generate_latent_images(zs, truncation_psi, outdir, save_npy,prefix,vidname,f
         'output_transform': dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True),
         'randomize_noise': False
     }
-    
+
     if not isinstance(truncation_psi, list):
         truncation_psi = [truncation_psi] * len(zs)
-    
+
     for z_idx, z in enumerate(zs):
         if isinstance(z,list):
           z = np.array(z).reshape(1,512)
@@ -245,7 +246,7 @@ def generate_images_in_w_space(ws, truncation_psi,outdir,save_npy,prefix,vidname
         'randomize_noise': False,
         'truncation_psi': truncation_psi
     }
-    
+
     for w_idx, w in enumerate(ws):
         print('Generating image for step %d/%d ...' % (w_idx, len(ws)))
         noise_rnd = np.random.RandomState(1) # fix noise
@@ -261,12 +262,13 @@ def generate_images_in_w_space(ws, truncation_psi,outdir,save_npy,prefix,vidname
 def generate_latent_walk(network_pkl, truncation_psi, outdir, walk_type, frames, seeds, npys, save_vector, diameter=2.0, start_seed=0, framerate=24 ):
     global _G, _D, Gs, noise_vars
     tflib.init_tf()
+
     print('Loading networks from "%s"...' % network_pkl)
     with dnnlib.util.open_url(network_pkl) as fp:
-        _G, _D, Gs = pickle.load(fp) 
+        _G, _D, Gs = pickle.load(fp)
 
     os.makedirs(outdir, exist_ok=True)
-    
+
     # Render images for dlatents initialized from random seeds.
     Gs_kwargs = {
         'output_transform': dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True),
@@ -276,30 +278,37 @@ def generate_latent_walk(network_pkl, truncation_psi, outdir, walk_type, frames,
 
     noise_vars = [var for name, var in Gs.components.synthesis.vars.items() if name.startswith('noise')]
     zs = []
-    
-    # elif(len(npys) > 0):
-    #     zs = npys
-        
-    if(len(zs) > 2 ):
-        print('not enough values to generate walk')
-#         return false;
+    ws =[]
+
+
+    # npys specified, let's work with these instead of seeds
+    # npys must be saved as W's (arrays of 18x512)
+    if npys and (len(npys) > 0):
+        ws = npys
+
 
     wt = walk_type.split('-')
-    
+
     if wt[0] == 'line':
-        if(len(seeds) > 0):
+        if seeds and (len(seeds) > 0):
             zs = generate_zs_from_seeds(seeds,Gs)
 
-        number_of_steps = int(frames/(len(zs)-1))+1
-    
+        if ws == []:
+            number_of_steps = int(frames/(len(zs)-1))+1
+        else:
+            number_of_steps = int(frames/(len(ws)-1))+1
+
         if (len(wt)>1 and wt[1] == 'w'):
-          ws = []
-          for i in range(len(zs)):
-            ws.append(convertZtoW(zs[i]))
+          if ws == []:
+            for i in range(len(zs)):
+              ws.append(convertZtoW(zs[i]))
+
           points = line_interpolate(ws,number_of_steps)
           zpoints = line_interpolate(zs,number_of_steps)
+
         else:
           points = line_interpolate(zs,number_of_steps)
+
 
     # from Gene Kogan
     elif wt[0] == 'bspline':
@@ -330,7 +339,12 @@ def generate_latent_walk(network_pkl, truncation_psi, outdir, walk_type, frames,
       # ws = []
       # for i in enumerate(len(points)):
       #   ws.append(convertZtoW(points[i]))
-        seed_out = 'w-' + wt[0] + ('-'.join([str(seed) for seed in seeds]))
+        #added for npys
+        if seeds:
+            seed_out = 'w-' + wt[0] + ('-'.join([str(seed) for seed in seeds]))
+        else:
+            seed_out = 'w-' + wt[0] + '-dlatents'
+
         generate_images_in_w_space(points, truncation_psi,outdir,save_vector,'frame', seed_out, framerate)
     elif (len(wt)>1 and wt[1] == 'w'):
       print('%s is not currently supported in w space, please change your interpolation type' % (wt[0]))
@@ -348,10 +362,10 @@ def generate_neighbors(network_pkl, seeds, npys, diameter, truncation_psi, num_s
     tflib.init_tf()
     print('Loading networks from "%s"...' % network_pkl)
     with dnnlib.util.open_url(network_pkl) as fp:
-        _G, _D, Gs = pickle.load(fp) 
+        _G, _D, Gs = pickle.load(fp)
 
     os.makedirs(outdir, exist_ok=True)
-    
+
     # Render images for dlatents initialized from random seeds.
     Gs_kwargs = {
         'output_transform': dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True),
@@ -364,7 +378,7 @@ def generate_neighbors(network_pkl, seeds, npys, diameter, truncation_psi, num_s
     for seed_idx, seed in enumerate(seeds):
         print('Generating image for seed %d (%d/%d) ...' % (seed, seed_idx+1, len(seeds)))
         rnd = np.random.RandomState(seed)
-        
+
         og_z = rnd.randn(1, *Gs.input_shape[1:]) # [minibatch, component]
         tflib.set_vars({var: rnd.randn(*var.shape.as_list()) for var in noise_vars}) # [height, width]
         images = Gs.run(og_z, None, **Gs_kwargs) # [minibatch, height, width, channel]
@@ -559,12 +573,22 @@ def _parse_num_range_ext(s):
 
 def _parse_npy_files(files):
     '''Accept a comma separated list of npy files and return a list of z vectors.'''
-    print(files)
+
     zs =[]
-    
-    for f in files:
-        zs.append(np.load(files[f]))
-        
+
+    file_list = files.split(",")
+
+
+    for f in file_list:
+        # load numpy array
+        arr = np.load(f)
+        # check if it's actually npz:
+        if 'dlatents' in arr:
+            arr = arr['dlatents']
+        zs.append(arr)
+
+
+
     return zs
 
 #----------------------------------------------------------------------------
