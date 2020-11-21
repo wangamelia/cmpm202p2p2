@@ -232,11 +232,11 @@ def generate_latent_images(zs, truncation_psi, outdir, save_npy,prefix,vidname,f
         noise_rnd = np.random.RandomState(1) # fix noise
         tflib.set_vars({var: noise_rnd.randn(*var.shape.as_list()) for var in noise_vars}) # [height, width]
         images = Gs.run(z, None, **Gs_kwargs) # [minibatch, height, width, channel]
-        PIL.Image.fromarray(images[0], 'RGB').save(f'{outdir}/{prefix}{z_idx:05d}.png')
+        PIL.Image.fromarray(images[0], 'RGB').save(f'{outdir}/frames/{prefix}{z_idx:05d}.png')
         if save_npy:
           np.save(dnnlib.make_run_dir_path('%s%05d.npy' % (prefix,z_idx)), z)
 
-    cmd="ffmpeg -y -r {} -i {}/{}%05d.png -vcodec libx264 -pix_fmt yuv420p {}/walk-{}-{}fps.mp4".format(framerate,outdir,prefix,outdir,vidname,framerate)
+    cmd="ffmpeg -y -r {} -i {}/frames/{}%05d.png -vcodec libx264 -pix_fmt yuv420p {}/walk-{}-{}fps.mp4".format(framerate,outdir,prefix,outdir,vidname,framerate)
     subprocess.call(cmd, shell=True)
 
 def generate_images_in_w_space(ws, truncation_psi,outdir,save_npy,prefix,vidname,framerate):
@@ -252,11 +252,11 @@ def generate_images_in_w_space(ws, truncation_psi,outdir,save_npy,prefix,vidname
         noise_rnd = np.random.RandomState(1) # fix noise
         tflib.set_vars({var: noise_rnd.randn(*var.shape.as_list()) for var in noise_vars}) # [height, width]
         images = Gs.components.synthesis.run(w, **Gs_kwargs) # [minibatch, height, width, channel]
-        PIL.Image.fromarray(images[0], 'RGB').save(f'{outdir}/{prefix}{w_idx:05d}.png')
+        PIL.Image.fromarray(images[0], 'RGB').save(f'{outdir}/frames/{prefix}{w_idx:05d}.png')
         if save_npy:
           np.save(dnnlib.make_run_dir_path('%s%05d.npy' % (prefix,w_idx)), w)
 
-    cmd="ffmpeg -y -r {} -i {}/{}%05d.png -vcodec libx264 -pix_fmt yuv420p {}/walk-{}-{}fps.mp4".format(framerate,outdir,prefix,outdir,vidname,framerate)
+    cmd="ffmpeg -y -r {} -i {}/frames/{}%05d.png -vcodec libx264 -pix_fmt yuv420p {}/walk-{}-{}fps.mp4".format(framerate,outdir,prefix,outdir,vidname,framerate)
     subprocess.call(cmd, shell=True)
 
 def generate_latent_walk(network_pkl, truncation_psi, outdir, walk_type, frames, seeds, npys, save_vector, diameter=2.0, start_seed=0, framerate=24 ):
