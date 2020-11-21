@@ -268,6 +268,7 @@ def generate_latent_walk(network_pkl, truncation_psi, outdir, walk_type, frames,
         _G, _D, Gs = pickle.load(fp)
 
     os.makedirs(outdir, exist_ok=True)
+    os.makedirs(outdir+"/frames", exist_ok=True)
 
     # Render images for dlatents initialized from random seeds.
     Gs_kwargs = {
