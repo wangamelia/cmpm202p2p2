@@ -6,7 +6,7 @@
 
 * There's also [an unconditional model](https://archive.org/download/wikiart-stylegan2-conditional-model/WikiArt_Uncond1.pkl)
 
-## Many thanks to @dvschultz for his fork; original README is below:
+### Many thanks to @dvschultz for his fork; original README is below:
 
 ## Need Help?
 * If you’re new to StyleGAN2-ADA and looking to get started, please check out [this video series](https://www.youtube.com/playlist?list=PLWuCzxqIpJs8ViuBIUtAk-dsAtdrApYoy) from a course Lia Coleman and I taught in October 2020.
