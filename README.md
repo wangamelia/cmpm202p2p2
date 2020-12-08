@@ -1,3 +1,13 @@
+![Teaser image](./fake_art_portrait.jpg)
+
+* [Download the conditional WikiArt model](https://archive.org/download/wikiart-stylegan2-conditional-model/WikiArt5.pkl)
+
+* See [the notebook for examples](https://github.com/pbaylies/stylegan2-ada/blob/main/WikiArt%20Example%20Generation.ipynb) 
+
+There's also [an unconditional model](https://archive.org/download/wikiart-stylegan2-conditional-model/WikiArt_Uncond1.pkl)
+
+## Many thanks to @dvschultz for his fork; original README is below:
+
 ## Need Help?
 * If you’re new to StyleGAN2-ADA and looking to get started, please check out [this video series](https://www.youtube.com/playlist?list=PLWuCzxqIpJs8ViuBIUtAk-dsAtdrApYoy) from a course Lia Coleman and I taught in October 2020.
 * Interested in contributing? Please submit PRs or discuss changes in the [Artificial Images Slack](https://join.slack.com/t/ml-images/shared_invite/zt-9mxoe7va-eBZ9xzAWpx8VRL~Km_PzUQ) channel
