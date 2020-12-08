@@ -20,8 +20,8 @@ def setup(opts):
 
 generate_inputs = {
     'z': runway.vector(512, sampling_std=0.5),
-    'label': runway.number(min=0, max=100000, default=0, step=1)
-    'scale': runway.number(min=-5, max=5, default=0, step=0.05)
+    'label': runway.number(min=0, max=100000, default=0, step=1),
+    'scale': runway.number(min=-5, max=5, default=0, step=0.05),
     'truncation': runway.number(min=0, max=1, default=1, step=0.01)
 }
 
