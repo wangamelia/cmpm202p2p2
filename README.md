@@ -2,7 +2,7 @@
 
 * [Download the conditional WikiArt model](https://archive.org/download/wikiart-stylegan2-conditional-model/WikiArt5.pkl)
 
-* See [the notebook for examples](https://github.com/pbaylies/stylegan2-ada/blob/main/WikiArt%20Example%20Generation.ipynb) 
+* See [the notebook for sample generation](https://github.com/pbaylies/stylegan2-ada/blob/main/WikiArt%20Example%20Generation.ipynb) 
 
 * There's also [an unconditional model](https://archive.org/download/wikiart-stylegan2-conditional-model/WikiArt_Uncond1.pkl)
 
