@@ -14,12 +14,14 @@ from dnnlib import EasyDict
 
 metric_defaults = EasyDict([(args.name, args) for args in [
     # ADA paper.
+    EasyDict(name='fid10k_full',     class_name='metrics.frechet_inception_distance.FID', max_reals=None, num_fakes=10000, minibatch_per_gpu=8, force_dataset_args=dict(shuffle=False, max_images=None, repeat=False, mirror_augment=False)),
     EasyDict(name='fid50k_full',     class_name='metrics.frechet_inception_distance.FID', max_reals=None, num_fakes=50000, minibatch_per_gpu=8, force_dataset_args=dict(shuffle=False, max_images=None, repeat=False, mirror_augment=False)),
     EasyDict(name='kid50k_full',     class_name='metrics.kernel_inception_distance.KID',  max_reals=1000000, num_fakes=50000, minibatch_per_gpu=8, force_dataset_args=dict(shuffle=False, max_images=None, repeat=False, mirror_augment=False)),
     EasyDict(name='pr50k3_full',     class_name='metrics.precision_recall.PR',            max_reals=200000, num_fakes=50000, nhood_size=3, minibatch_per_gpu=8, row_batch_size=10000, col_batch_size=10000, force_dataset_args=dict(shuffle=False, max_images=None, repeat=False, mirror_augment=False)),
     EasyDict(name='is50k',           class_name='metrics.inception_score.IS',             num_images=50000, num_splits=10, minibatch_per_gpu=8, force_dataset_args=dict(shuffle=False, max_images=None)),
 
     # Legacy: StyleGAN2.
+    EasyDict(name='fid10k',          class_name='metrics.frechet_inception_distance.FID', max_reals=10000, num_fakes=10000, minibatch_per_gpu=8, force_dataset_args=dict(shuffle=False, max_images=None)),
     EasyDict(name='fid50k',          class_name='metrics.frechet_inception_distance.FID', max_reals=50000, num_fakes=50000, minibatch_per_gpu=8, force_dataset_args=dict(shuffle=False, max_images=None)),
     EasyDict(name='kid50k',          class_name='metrics.kernel_inception_distance.KID',  max_reals=50000, num_fakes=50000, minibatch_per_gpu=8, force_dataset_args=dict(shuffle=False, max_images=None)),
     EasyDict(name='pr50k3',          class_name='metrics.precision_recall.PR',            max_reals=50000, num_fakes=50000, nhood_size=3, minibatch_per_gpu=8, row_batch_size=10000, col_batch_size=10000, force_dataset_args=dict(shuffle=False, max_images=None)),
